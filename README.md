@@ -1,6 +1,6 @@
 # Docker list containers
 
-This is a simple script to list all containers in a docker host and a basic status in a table.
+This is a simple terminal program to list all containers in a docker host and a basic status in a table.
 It's mainly meant to try out the docker client for a different project I want to work on.
 
 ## Usage
