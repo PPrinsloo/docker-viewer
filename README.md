@@ -1,7 +1,7 @@
 # Docker list containers
 
 This is a simple terminal program to list all containers in a docker host and a basic status in a table.
-It's mainly meant to try out the docker client for a different project I want to work on.
+It's mainly meant to try out the docker client for a different project I want to work on. 
 
 ## Usage
 Install go from [here](https://golang.org/doc/install) and run the following command in the root of the project.
@@ -14,3 +14,6 @@ If you want the command to be generally available, you can install it using go f
 ```bash
 go install
 ```
+
+## Note
+This is a simple program and is not meant to be used in production. It's just a simple program to list all containers in a docker host and a basic status in a table.
