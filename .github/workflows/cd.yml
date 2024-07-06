@@ -42,12 +42,62 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Upload Release Asset
+      - name: Upload Linux AMD64 Release Asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/container-viewer-${{ github.ref_name }}
-          asset_name: container-viewer-${{ github.ref_name }}
+          asset_path: ./build/container-view-linux-amd64
+          asset_name: container-view-linux-amd64-${{ github.ref_name }}
+          asset_content_type: application/octet-stream
+
+      - name: Upload Linux ARM64 Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/container-view-linux-arm64
+          asset_name: container-view-linux-arm64-${{ github.ref_name }}
+          asset_content_type: application/octet-stream
+
+      - name: Upload Windows AMD64 Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/container-view-windows-amd64.exe
+          asset_name: container-view-windows-amd64-${{ github.ref_name }}.exe
+          asset_content_type: application/octet-stream
+
+      - name: Upload Windows ARM64 Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/container-view-windows-arm64.exe
+          asset_name: container-view-windows-arm64-${{ github.ref_name }}.exe
+          asset_content_type: application/octet-stream
+
+      - name: Upload macOS AMD64 Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/container-view-darwin-amd64
+          asset_name: container-view-darwin-amd64-${{ github.ref_name }}
+          asset_content_type: application/octet-stream
+
+      - name: Upload macOS ARM64 Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/container-view-darwin-arm64
+          asset_name: container-view-darwin-arm64-${{ github.ref_name }}
           asset_content_type: application/octet-stream
