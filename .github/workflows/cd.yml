@@ -5,6 +5,10 @@ on:
     tags:
       - '*'
 
+permissions:
+  contents: write
+  releases: write
+
 jobs:
   deploy:
     name: Build
