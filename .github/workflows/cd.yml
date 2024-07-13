@@ -36,5 +36,5 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ github.ref_name }}
-          files: build/*
+          file: build/*
           file_glob: true
