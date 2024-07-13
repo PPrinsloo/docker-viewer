@@ -1,9 +1,9 @@
 name: cd
 
 on:
-  push:
-    tags:
-      - '*'
+  release:
+    types:
+      - created
 
 permissions:
   contents: write
@@ -16,17 +16,6 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-
-      - name: Get Release ID
-        id: get_release
-        run: |
-          RELEASE_ID=$(curl -s \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ github.ref_name }} \
-            | jq .id)
-          echo "::set-output name=release_id::$RELEASE_ID"
-        shell: bash
 
       - name: Set up Go
         uses: actions/setup-go@v5
@@ -42,52 +31,10 @@ jobs:
           name: container-viewer-${{ github.ref_name }}
           path: build/
 
-      - name: Upload Linux ARM64 Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload the binaries
+        uses: svenstaro/upload-release-action@v2
         with:
-          upload_url: https://uploads.github.com/repos/${{ github.repository }}/releases/${{ steps.get_release.outputs.release_id }}/assets
-          asset_path: ./build/container-view-linux-arm64
-          asset_name: container-view-linux-arm64-${{ github.ref_name }}
-          asset_content_type: application/octet-stream
-
-      - name: Upload Windows AMD64 Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: https://uploads.github.com/repos/${{ github.repository }}/releases/${{ steps.get_release.outputs.release_id }}/assets
-          asset_path: ./build/container-view-windows-amd64.exe
-          asset_name: container-view-windows-amd64-${{ github.ref_name }}.exe
-          asset_content_type: application/octet-stream
-
-      - name: Upload Windows ARM64 Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: https://uploads.github.com/repos/${{ github.repository }}/releases/${{ steps.get_release.outputs.release_id }}/assets
-          asset_path: ./build/container-view-windows-arm64.exe
-          asset_name: container-view-windows-arm64-${{ github.ref_name }}.exe
-          asset_content_type: application/octet-stream
-
-      - name: Upload macOS AMD64 Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: https://uploads.github.com/repos/${{ github.repository }}/releases/${{ steps.get_release.outputs.release_id }}/assets
-          asset_path: ./build/container-view-darwin-amd64
-          asset_name: container-view-darwin-amd64-${{ github.ref_name }}
-          asset_content_type: application/octet-stream
-
-      - name: Upload macOS ARM64 Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: https://uploads.github.com/repos/${{ github.repository }}/releases/${{ steps.get_release.outputs.release_id }}/assets
-          asset_path: ./build/container-view-darwin-arm64
-          asset_name: container-view-darwin-arm64-${{ github.ref_name }}
-          asset_content_type: application/octet-stream
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref_name }}
+          files: build/*
+          file_glob: true
