@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -11,7 +12,9 @@ var baseStyle = lipgloss.NewStyle().
 	BorderForeground(lipgloss.Color("240"))
 
 type model struct {
-	table table.Model
+	containerSelected   string
+	containersTable     table.Model
+	containerStatsTable table.Model
 }
 
 func (m model) Init() tea.Cmd { return nil }
@@ -22,25 +25,41 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "esc":
-			if m.table.Focused() {
-				m.table.Blur()
-			} else {
-				m.table.Focus()
-			}
+			m.containerSelected = ""
+			m.containerStatsTable.Focus()
 		case "q", "ctrl+c":
 			return m, tea.Quit
 		case "enter":
-			return m, tea.Batch(
-				tea.Printf("Let's go to %s!", m.table.SelectedRow()[1]),
-			)
+			if m.containerSelected == "" {
+				selectedRow := m.containersTable.SelectedRow()
+				containerID := selectedRow[0] // Assuming the first column contains the container ID.
+				m.containerSelected = containerID
+
+				// Fetch stats for the selected container and update containerStatsTable.
+				stats, err := fetchContainerStats(containerID)
+				if err != nil {
+					fmt.Println("Error fetching container stats:", err)
+					return m, nil
+				}
+				statsRows := convertStatsToRows(stats)
+				statsColumns := []table.Column{
+					{Title: "Metric", Width: 20},
+					{Title: "Value", Width: 30},
+				}
+				m.containerStatsTable = SetTableState(statsColumns, statsRows)
+				m.containerStatsTable.Focus()
+			}
 		}
 	}
-	m.table, cmd = m.table.Update(msg)
+	m.containersTable, cmd = m.containersTable.Update(msg)
 	return m, cmd
 }
 
 func (m model) View() string {
-	return baseStyle.Render(m.table.View()) + "\n"
+	if m.containerSelected != "" {
+		return baseStyle.Render(m.containerStatsTable.View()) + "\n"
+	}
+	return baseStyle.Render(m.containersTable.View()) + "\n"
 }
 
 func SetTableState(columns []table.Column, rows []table.Row) table.Model {
