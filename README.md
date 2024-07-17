@@ -1,7 +1,7 @@
 # Docker list containers
 
 This is a simple terminal program to list all containers in a docker host and a basic status in a table.
-It's mainly meant to try out the docker client for a different project I want to work on. 
+It's mainly meant to try out the docker client for a different project I want to work on. I also ended up using this project to learn how to make github actions build binaries when I make a realease and to do some basic checks from a pull request.
 
 ## Usage
 Install go from [here](https://golang.org/doc/install) and run the following command in the root of the project.
